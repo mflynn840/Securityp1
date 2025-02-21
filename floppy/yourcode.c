@@ -37,24 +37,25 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	struct stat stat_obj_file;
 
 
-
-	chmod(dir1, S_IROTH);
-	chmod(dir2, S_IROTH);
-	chmod(pathname, S_IROTH);
-	chmod(pathname, S_IWOTH);
-
-
-	printf("------------------------------after---------------------");
-	//see if we have search access to grandparent directory
+	//remember old permissions, add read access to parent and grandparents
+	//by adding one more bit mask on
 	int r1 = stat(dir1, &stat_obj_dir1);
-	printf("dir1 permission Bits: %o\n", stat_obj_dir1.st_mode);
+	chmod(dir1, stat_obj_dir1.st_mode | S_IROTH);
+	int r2 = stat(dir2, &stat_obj_dir2);
+	chmod(dir2, stat_obj_dir2.st_mode | S_IROTH);
+	int r3 = stat(pathname, &stat_obj_file);
+	mode_t new_file_mode = stat_obj_file.st_mode | S_IROTH | S_WOTH;
+	chmod(pathname, new_file_mode);
+
+	
+	printf("------------------------------after---------------------");
 
 	//see if we have search access to parent directory
-	int r2 = stat(dir2, &stat_obj_dir2);
+	printf("dir1 permission Bits: %o\n", stat_obj_dir1.st_mode);
 	printf("dir2 permission Bits: %o\n", stat_obj_dir2.st_mode);
 
 	//see if we have read/write access to the file
-	int r3 = stat(pathname, &stat_obj_file);
+	
 	printf("dir1 permission Bits: %o\n", stat_obj_file.st_mode);
 	printf("dir1=%s, dir2=%s, pathname=%s");
 
