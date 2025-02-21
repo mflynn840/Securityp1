@@ -73,7 +73,7 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	chmod(pathname, new_file_mode);
 
 	
-	printf("------------------------------after---------------------");
+	printf("------------------------------after---------------------\n");
 
 	struct stat new_stat_dir1;
 	struct stat new_stat_dir2;
