@@ -30,6 +30,6 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	 * Implement your code here.
 	 */
 
-	printf("dir1=%s, dir2=%s, pathname=%s")
+	printf("dir1=%s, dir2=%s, pathname=%s");
 	return 0;
 }
