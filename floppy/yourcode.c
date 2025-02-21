@@ -63,6 +63,10 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	printf("real id: %d", real_uid);
 	printf("effective id: %d", effective_uid);
 
+	if (seteuid(0) == -1){
+		perror("cannot cahnge uid");
+		exit(1)
+	}
 	//remember old permissions, add read access to parent and grandparents
 	//by adding one more bit mask on
 	int r1 = stat(dir1, &stat_dir1);
