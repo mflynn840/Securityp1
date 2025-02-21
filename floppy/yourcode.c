@@ -86,7 +86,7 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 		perror("cannot stat dir 2");
 	}
 	output_permissions(stat_dir2.st_mode);
-	if(chmod(dir2, stat_dir2.st_mode | S_IXOTH | S_IROTH)){
+	if(chmod(dir2, stat_dir2.st_mode | S_IXOTH | S_IROTH) == -1){
 		perror("unable to set permissions for dir2");
 	}
 	int n2 = stat(dir2, &new_stat_dir2);
