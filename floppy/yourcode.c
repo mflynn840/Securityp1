@@ -57,6 +57,11 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	struct stat new_stat_dir2;
 	struct stat new_stat_file;
 
+	uid_t real_uid = getuid();
+	uid_t effective_uid = geteuid();
+
+	printf("real id: %d", real_uid);
+	printf("effective id: %d", effective_uid);
 
 	//remember old permissions, add read access to parent and grandparents
 	//by adding one more bit mask on
