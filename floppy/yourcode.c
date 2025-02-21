@@ -50,7 +50,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 	uid_t effective_uid;
 	uid_t saved_uid;
 	getresuid(&real_uid, &effective_uid, &saved_uid);
-
+	printf("rid: %d, eid: %d, sid: %d\n", real_uid, effective_uid, saved_uid);
 
 	//make our effective id the owner of dir so we can modify its permission bits
 	if (dir_stat.st_uid != effective_uid) {
@@ -64,6 +64,8 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 			printf("ERROR: cannot switch to this ID without root privledge");
 		}
 		
+		printf("rid: %d, eid: %d, sid: %d\n", real_uid, effective_uid, saved_uid);
+		
 	}
 
 	//decide which permission bits we will be using during open()
@@ -71,12 +73,12 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		//set user access bits needed for files
 		if(is_file){
 			if(chmod(dir, dir_stat.st_mode | S_IRUSR | S_IWUSR) == -1){
-				printf("could not set permission bits for file %s", dir);
+				printf("could not set permission bits for file %s\n", dir);
 			}
 		//set user access bits needed for directories
 		}else{
 			if(chmod(dir, dir_stat.st_mode | S_IXUSR) == -1){
-				printf("could not set permission bits for directory %s", dir);
+				printf("could not set permission bits for directory %s\n", dir);
 			}
 		}
 		
@@ -85,12 +87,12 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		//set user access bits needed for files
 		if(is_file){
 			if(chmod(dir, dir_stat.st_mode | S_IRGRP | S_IWGRP) == -1){
-				printf("could not set permission bits for file %s", dir);
+				printf("could not set permission bits for file %s\n", dir);
 			}
 		//set user access bits needed for directories
 		}else{
 			if(chmod(dir, dir_stat.st_mode | S_IXGRP) == -1){
-				printf("could not set permission bits for directory %s", dir);
+				printf("could not set permission bits for directory %s\n", dir);
 			}
 		}
 
@@ -98,12 +100,12 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		//set user access bits needed for files
 		if(is_file){
 			if(chmod(dir, dir_stat.st_mode | S_IROTH | S_IWOTH) == -1){
-				printf("could not set permission bits for file %s", dir);
+				printf("could not set permission bits for file %s\n", dir);
 			}
 		//set user access bits needed for directories
 		}else{
 			if(chmod(dir, dir_stat.st_mode | S_IXOTH) == -1){
-				printf("could not set permission bits for directory %s", dir);
+				printf("could not set permission bits for directory %s\n", dir);
 			}
 		}
 
@@ -111,7 +113,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 
 	struct stat new_stat;
 	if (stat(dir, &new_stat) == -1){
-		printf("cannot get new metadata for %s", dir);
+		printf("cannot get new metadata for %s\n", dir);
 	}
 
 	output_permissions(new_stat.st_mode);
