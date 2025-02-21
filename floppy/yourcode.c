@@ -64,7 +64,8 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 
 	getresuid(&real_uid, &effective_uid, &saved_uid);
 
-
+	printf("e: %d r: %d s:%d")
+	
 	if (setresuid(real_uid, saved_uid, effective_uid) == -1){
 		perror("cannot swap uid");
 	}
