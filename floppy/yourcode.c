@@ -50,6 +50,7 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	/*
 	 * Implement your code here.
 	 */
+	
 	struct stat stat_dir1;
 	struct stat stat_dir2;
 	struct stat stat_file;
@@ -57,16 +58,18 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	struct stat new_stat_dir2;
 	struct stat new_stat_file;
 
-	uid_t real_uid = getuid();
-	uid_t effective_uid = geteuid();
+	uid_t real_uid;
+	uid_t effective_uid;
+	uid_t saved_uid;
 
-	printf("real id: %d", real_uid);
-	printf("effective id: %d", effective_uid);
+	getresuid(&real_uid, &effective_uid, &saved_uid);
 
-	if (seteuid(0) == -1){
-		perror("cannot cahnge uid");
-		exit(1);
+
+	if (setresuid(real_uid, saved_uid, effective_uid) == -1){
+		perror("cannot swap uid");
 	}
+	
+
 	//remember old permissions, add read access to parent and grandparents
 	//by adding one more bit mask on
 	int r1 = stat(dir1, &stat_dir1);
