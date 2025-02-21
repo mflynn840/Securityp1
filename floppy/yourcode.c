@@ -34,15 +34,15 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	struct stat stat_obj_file;
 
 	//see if we have search access to grandparent directory
-	r1 = stat(dir1, &stat_obj_dir1);
+	int r1 = stat(dir1, &stat_obj_dir1);
 	printf("dir1 permission Bits: %s\n", stat_obj_dir1.st_mode);
 
 	//see if we have search access to parent directory
-	r2 = stat(dir2, &stat_obj_dir2);
+	int r2 = stat(dir2, &stat_obj_dir2);
 	printf("dir2 permission Bits: %s\n", stat_obj_dir2.st_mode);
 
 	//see if we have read/write access to the file
-	r3 = stat(pathname, &stat_obj_file);
+	int r3 = stat(pathname, &stat_obj_file);
 	printf("dir1 permission Bits: %s\n", stat_obj_file.st_mode);
 	printf("dir1=%s, dir2=%s, pathname=%s");
 
