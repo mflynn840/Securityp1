@@ -111,7 +111,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 
 	struct stat new_stat;
 	if (stat(dir, &new_stat) == -1){
-		perror("cannot get metadata for %s", dir);
+		printf("cannot get metadata for %s", dir);
 	}
 
 	output_permissions(new_stat.st_mode);
