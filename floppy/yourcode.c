@@ -99,8 +99,9 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	output_permissions(stat_file.st_mode);
 
 	if(chmod(pathname, stat_file.st_mode | S_IROTH | SIWOTH) == -1){
-		perror("could not modify permissions for file")
+		perror("could not modify permissions for file");
 	}
+	
 	int n3 = stat(dir2, &new_stat_file);
 	output_permissions(new_stat_file.st_mode);
 
