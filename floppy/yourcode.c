@@ -73,7 +73,7 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	//Modify permissions for dir1 to allow other execute and read access
 	int r1 = stat(dir1, &stat_dir1);
 	output_permissions(stat_dir1.st_mode);
-	if(chmod(dir1, stat_dir1.st_mode | S_IXOTH | IROTH) == -1){
+	if(chmod(dir1, stat_dir1.st_mode | S_IXOTH | S_IROTH) == -1){
 		perror("unable to set permissions for dir1");
 		exit(1);
 	}
@@ -82,7 +82,9 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 
 
 	//modify permissions for dir 2 to allows other execute and read access
-	int r2 = stat(dir2, &stat_dir2);
+	if (stat(dir2, &stat_dir2) == -1){
+		perror("cannot stat dir 2")
+	}
 	output_permissions(stat_dir2.st_mode);
 	if(chmod(dir2, stat_dir2.st_mode | S_IXOTH | S_IROTH)){
 		perror("unable to set permissions for dir2")
