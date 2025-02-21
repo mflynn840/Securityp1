@@ -80,14 +80,14 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	struct stat new_stat_file;
 
 	int r4 = stat(dir1, &new_stat_dir1);
-	int r5 = stat(dir1, &new_stat_dir2);
-	int r6 = stat(dir1, &new_stat_file);
+	int r5 = stat(dir2, &new_stat_dir2);
+	int r6 = stat(pathname, &new_stat_file);
 
 	output_permissions(new_stat_dir1.st_mode);
 	output_permissions(new_stat_dir2.st_mode);
 	output_permissions(new_stat_file.st_mode);
 
-	printf("dir1=%s, dir2=%s, pathname=%s");
+	printf("dir1=%s, dir2=%s, pathname=%s", dir1, dir2, pathname);
 
 	return 0;
 }
