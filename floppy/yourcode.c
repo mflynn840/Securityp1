@@ -12,6 +12,24 @@
 #include <sys/stat.h>
 #include "openfile.h"
 
+
+
+
+void output_permissions(mode_t m)
+{
+    putchar( m & S_IRUSR ? 'r' : '-' );
+    putchar( m & S_IWUSR ? 'w' : '-' );
+    putchar( m & S_IXUSR ? 'x' : '-' );
+    putchar( m & S_IRGRP ? 'r' : '-' );
+    putchar( m & S_IWGRP ? 'w' : '-' );
+    putchar( m & S_IXGRP ? 'x' : '-' );
+    putchar( m & S_IROTH ? 'r' : '-' );
+    putchar( m & S_IWOTH ? 'w' : '-' );
+    putchar( m & S_IXOTH ? 'x' : '-' );
+    putchar('\n');
+}
+
+
 /*
  * Function: makeAccessWork()
  *
@@ -40,23 +58,35 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	//remember old permissions, add read access to parent and grandparents
 	//by adding one more bit mask on
 	int r1 = stat(dir1, &stat_obj_dir1);
+	output_permissions(stat_obj_dir1.st_mode);
 	chmod(dir1, stat_obj_dir1.st_mode | S_IROTH);
+
+
 	int r2 = stat(dir2, &stat_obj_dir2);
+	output_permissions(stat_obj_dir2.st_mode);
 	chmod(dir2, stat_obj_dir2.st_mode | S_IROTH);
+
+
 	int r3 = stat(pathname, &stat_obj_file);
+	output_permissions(stat_obj_file.st_mode);
 	mode_t new_file_mode = stat_obj_file.st_mode | S_IROTH | S_IWOTH;
 	chmod(pathname, new_file_mode);
 
 	
 	printf("------------------------------after---------------------");
 
-	//see if we have search access to parent directory
-	printf("dir1 permission Bits: %o\n", stat_obj_dir1.st_mode);
-	printf("dir2 permission Bits: %o\n", stat_obj_dir2.st_mode);
+	struct stat new_stat_dir1;
+	struct stat new_stat_dir2;
+	struct stat new_stat_file;
 
-	//see if we have read/write access to the file
-	
-	printf("dir1 permission Bits: %o\n", stat_obj_file.st_mode);
+	int r4 = stat(dir1, &new_stat_dir1);
+	int r5 = stat(dir1, &new_stat_dir2);
+	int r6 = stat(dir1, &new_stat_file);
+
+	output_permissions(new_stat_dir1.st_mode);
+	output_permissions(new_stat_dir2.st_mode);
+	output_permissions(new_stat_file.st_mode);
+
 	printf("dir1=%s, dir2=%s, pathname=%s");
 
 	return 0;
