@@ -70,37 +70,39 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 		perror("cannot swap uid");
 	}
 	
-
-	//remember old permissions, add read access to parent and grandparents
-	//by adding one more bit mask on
+	//Modify permissions for dir1 to allow other execute and read access
 	int r1 = stat(dir1, &stat_dir1);
 	output_permissions(stat_dir1.st_mode);
-	int x1 = chmod(dir1, stat_dir1.st_mode | S_IXOTH);
-	if (x1!=0){
-		perror("unable to set permissions");
+	if(chmod(dir1, stat_dir1.st_mode | S_IXOTH | IROTH) == -1){
+		perror("unable to set permissions for dir1");
 		exit(1);
 	}
-
 	int n1 = stat(dir1, &new_stat_dir1);
 	output_permissions(new_stat_dir1.st_mode);
 
 
+	//modify permissions for dir 2 to allows other execute and read access
 	int r2 = stat(dir2, &stat_dir2);
 	output_permissions(stat_dir2.st_mode);
-	chmod(dir2, stat_dir2.st_mode | S_IXOTH);
+	if(chmod(dir2, stat_dir2.st_mode | S_IXOTH | S_IROTH)){
+		perror("unable to set permissions for dir2")
+	}
 	int n2 = stat(dir2, &new_stat_dir2);
 	output_permissions(new_stat_dir2.st_mode);
 
 
+
+	//modify permissions for file to allow other read and write
 	int r3 = stat(pathname, &stat_file);
 	output_permissions(stat_file.st_mode);
-	mode_t new_file_mode = stat_file.st_mode | S_IROTH | S_IWOTH;
-	chmod(pathname, new_file_mode);
+
+	if(chmod(pathname, stat_file.st_mode | S_IROTH | SIWOTH) == -1){
+		perror("could not modify permissions for file")
+	}
 	int n3 = stat(dir2, &new_stat_file);
 	output_permissions(new_stat_file.st_mode);
 
 	
-
 	printf("dir1=%s, dir2=%s, pathname=%s", dir1, dir2, pathname);
 
 	return 0;
