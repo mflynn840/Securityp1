@@ -62,7 +62,11 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	//by adding one more bit mask on
 	int r1 = stat(dir1, &stat_dir1);
 	output_permissions(stat_dir1.st_mode);
-	chmod(dir1, stat_dir1.st_mode | S_IROTH);
+	int x1 = chmod(dir1, stat_dir1.st_mode | S_IROTH);
+	if (x1!=0){
+		printf("unable to set permissions");
+	}
+
 	int n1 = stat(dir1, &new_stat_dir1);
 	output_permissions(new_stat_dir1.st_mode);
 
