@@ -58,7 +58,7 @@ void swap_uids(uid_t new_effective){
 }
 
 void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
-	printf("modifying %s", dir)
+	printf("modifying %s", dir);
 	//get the files metadata
 	struct stat dir_stat;
 	if (stat(dir, &dir_stat) == -1){
