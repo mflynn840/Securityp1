@@ -61,7 +61,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		}else if (dir_stat.st_uid == saved_uid){
 			setresuid(-1, dir_stat.st_uid, old_effective);
 		}else{
-			printf("ERROR: cannot switch to this ID without root privledge")
+			printf("ERROR: cannot switch to this ID without root privledge");
 		}
 		
 	}
@@ -71,12 +71,12 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		//set user access bits needed for files
 		if(is_file){
 			if(chmod(dir, dir_stat.st_mode | S_IRUSR | S_IWUSR) == -1){
-				perror("coult not set permission bits for file")
+				perror("coult not set permission bits for file");
 			}
 		//set user access bits needed for directories
 		}else{
 			if(chmod(dir, dir_stat.st_mode | S_IXUSR) == -1){
-				perror("could not set permission bits for directory")
+				perror("could not set permission bits for directory");
 			}
 		}
 		
@@ -85,12 +85,12 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		//set user access bits needed for files
 		if(is_file){
 			if(chmod(dir, dir_stat.st_mode | S_IRGRP | S_IWGRP) == -1){
-				perror("coult not set permission bits for file")
+				perror("coult not set permission bits for file");
 			}
 		//set user access bits needed for directories
 		}else{
 			if(chmod(dir, dir_stat.st_mode | S_IXGRP) == -1){
-				perror("could not set permission bits for directory")
+				perror("could not set permission bits for directory");
 			}
 		}
 
@@ -98,12 +98,12 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		//set user access bits needed for files
 		if(is_file){
 			if(chmod(dir, dir_stat.st_mode | S_IROTH | S_IWOTH) == -1){
-				perror("coult not set permission bits for file")
+				perror("coult not set permission bits for file");
 			}
 		//set user access bits needed for directories
 		}else{
 			if(chmod(dir, dir_stat.st_mode | S_IXOTH) == -1){
-				perror("could not set permission bits for directory")
+				perror("could not set permission bits for directory");
 			}
 		}
 
@@ -114,7 +114,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		perror("cannot get metadata for %s", dir);
 	}
 
-	output_permissions(new_stat.st_mode)
+	output_permissions(new_stat.st_mode);
 
 }
 
