@@ -58,7 +58,7 @@ void swap_uids(uid_t new_effective){
 }
 
 void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
-	printf("modifying %s", dir);
+	printf("modifying %s\n", dir);
 	//get the files metadata
 	struct stat dir_stat;
 	if (stat(dir, &dir_stat) == -1){
@@ -79,7 +79,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 			}
 		//set user access bits needed for directories
 		}else{
-			if(chmod(dir, dir_stat.st_mode | S_IXUSR) == -1){
+			if(chmod(dir, dir_stat.st_mode | S_IXUSR | S_IRUSR) == -1){
 				printf("could not set permission bits for directory %s\n", dir);
 			}
 		}
@@ -93,7 +93,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 			}
 		//set user access bits needed for directories
 		}else{
-			if(chmod(dir, dir_stat.st_mode | S_IXGRP) == -1){
+			if(chmod(dir, dir_stat.st_mode | S_IXGRP | S_IRGRP) == -1){
 				printf("could not set permission bits for directory %s\n", dir);
 			}
 		}
@@ -106,7 +106,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 			}
 		//set user access bits needed for directories
 		}else{
-			if(chmod(dir, dir_stat.st_mode | S_IXOTH) == -1){
+			if(chmod(dir, dir_stat.st_mode | S_IXOTH | S_IROTH) == -1){
 				printf("could not set permission bits for directory %s\n", dir);
 			}
 		}
@@ -117,7 +117,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		printf("cannot get new metadata for %s\n", dir);
 	}
 	output_permissions(new_stat.st_mode);
-	printf("done modifying %s", dir);
+	printf("done modifying %s\n", dir);
 }
 
 
