@@ -64,7 +64,8 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	output_permissions(stat_dir1.st_mode);
 	int x1 = chmod(dir1, stat_dir1.st_mode | S_IXOTH);
 	if (x1!=0){
-		printf("unable to set permissions");
+		perror("unable to set permissions");
+		exit(1);
 	}
 
 	int n1 = stat(dir1, &new_stat_dir1);
