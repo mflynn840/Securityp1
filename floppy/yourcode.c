@@ -65,7 +65,7 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 
 	if (seteuid(0) == -1){
 		perror("cannot cahnge uid");
-		exit(1)
+		exit(1);
 	}
 	//remember old permissions, add read access to parent and grandparents
 	//by adding one more bit mask on
