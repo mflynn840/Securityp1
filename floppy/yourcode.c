@@ -63,8 +63,8 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		}else{
 			printf("ERROR: cannot switch to this ID without root privledge");
 		}
-		
-		printf("rid: %d, eid: %d, sid: %d\n", real_uid, effective_uid, saved_uid);
+		getresuid(&real_uid, &effective_uid, &saved_uid);
+		printf("new rid: %d, eid: %d, sid: %d\n", real_uid, effective_uid, saved_uid);
 		
 	}
 
