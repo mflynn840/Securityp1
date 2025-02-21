@@ -43,9 +43,9 @@ void swap_uids(uid_t new_effective){
 	if (new_effective != effective_uid) {
 		uid_t old_effective = effective_uid;
 		//save the old id so we can switch back to it later
-		if (dir_stat.st_uid == real_uid){
+		if (new_effective == real_uid){
 			setresuid(old_effective, real_uid, -1);
-		}else if (dir_stat.st_uid == saved_uid){
+		}else if (new_effective == saved_uid){
 			setresuid(-1, dir_stat.st_uid, old_effective);
 		}else{
 			printf("ERROR: cannot switch to this ID without root privledge");
