@@ -58,7 +58,7 @@ void swap_uids(uid_t new_effective){
 }
 
 void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
-
+	printf("modifying %s", dir)
 	//get the files metadata
 	struct stat dir_stat;
 	if (stat(dir, &dir_stat) == -1){
@@ -117,7 +117,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		printf("cannot get new metadata for %s\n", dir);
 	}
 	output_permissions(new_stat.st_mode);
-
+	printf("done modifying %s", dir)
 }
 
 
@@ -165,7 +165,7 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	//give pathnames owner access to dir 2
 	struct stat file_stat;
 	if (stat(pathname, &file_stat) == -1){
-		printf("cannot get metadata for %s\n", pathname);
+		printf("Error %s\n", pathname);
 	}
 	modify_dir(dir2, file_stat.st_uid, file_stat.st_gid, false);
 	modify_dir(pathname, final_uid, final_gid, true);
