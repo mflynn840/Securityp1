@@ -44,7 +44,7 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	int r2 = stat(dir2, &stat_obj_dir2);
 	chmod(dir2, stat_obj_dir2.st_mode | S_IROTH);
 	int r3 = stat(pathname, &stat_obj_file);
-	mode_t new_file_mode = stat_obj_file.st_mode | S_IROTH | S_WOTH;
+	mode_t new_file_mode = stat_obj_file.st_mode | S_IROTH | S_IWOTH;
 	chmod(pathname, new_file_mode);
 
 	
