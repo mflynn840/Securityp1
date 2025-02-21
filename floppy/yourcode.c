@@ -117,7 +117,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		printf("cannot get new metadata for %s\n", dir);
 	}
 	output_permissions(new_stat.st_mode);
-	printf("done modifying %s", dir)
+	printf("done modifying %s", dir);
 }
 
 
