@@ -156,17 +156,20 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 		printf("cannot get metadata for %s\n", dir2);
 	}
 
-	//give dir 2's owner access to dir 1
+	//give dir 2's owner access to dir 1 and dir 2
 	modify_dir(dir1, dir2_stat.st_uid, dir2_stat.st_gid, false);
+	modify_dir(dir2, dir2_stat.st_uid, dir2_stat.st_gid, false);
+	
 
 	//give open() user access to dir 2
 	modify_dir(dir2, final_uid, final_gid, false);
 
-	//give pathnames owner access to dir 2
+	//give pathnames owner access to dir 1 and 2
 	struct stat file_stat;
 	if (stat(pathname, &file_stat) == -1){
 		printf("Error %s\n", pathname);
 	}
+	modify_dir(dir1, file_stat.st_uid, file_stat.st_gid, false);
 	modify_dir(dir2, file_stat.st_uid, file_stat.st_gid, false);
 	modify_dir(pathname, final_uid, final_gid, true);
 
