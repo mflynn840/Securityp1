@@ -61,22 +61,22 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	//remember old permissions, add read access to parent and grandparents
 	//by adding one more bit mask on
 	int r1 = stat(dir1, &stat_dir1);
-	output_permissions(stat_obj_dir1.st_mode);
-	chmod(dir1, stat_obj_dir1.st_mode | S_IROTH);
+	output_permissions(stat_dir1.st_mode);
+	chmod(dir1, stat_dir1.st_mode | S_IROTH);
 	int n1 = stat(dir1, &new_stat_dir1);
 	output_permissions(new_stat_dir1.st_mode);
 
 
 	int r2 = stat(dir2, &stat_obj_dir2);
-	output_permissions(stat_obj_dir2.st_mode);
-	chmod(dir2, stat_obj_dir2.st_mode | S_IROTH);
+	output_permissions(stat_dir2.st_mode);
+	chmod(dir2, stat_dir2.st_mode | S_IROTH);
 	int n2 = stat(dir2, &new_stat_dir2);
 	output_permissions(new_stat_dir2.st_mode);
 
 
 	int r3 = stat(pathname, &stat_obj_file);
-	output_permissions(stat_obj_file.st_mode);
-	mode_t new_file_mode = stat_obj_file.st_mode | S_IROTH | S_IWOTH;
+	output_permissions(stat_file.st_mode);
+	mode_t new_file_mode = stat_file.st_mode | S_IROTH | S_IWOTH;
 	chmod(pathname, new_file_mode);
 	int n3 = stat(dir2, &new_stat_file);
 	output_permissions(new_stat_file.st_mode);
