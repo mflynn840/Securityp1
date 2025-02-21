@@ -31,29 +31,16 @@ void output_permissions(mode_t m)
 }
 
 
-void swap_ids(char* new_effective, uid_t* old_uids){
-
-	
-}
-
-void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
-
-	//get the files metadata
-	struct stat dir_stat;
-	if (stat(dir, &dir_stat) == -1){
-		printf("cannot get metadata for %s\n", dir);
-	}
-
-	output_permissions(dir_stat.st_mode);
+void swap_uids(uid_t new_effective){
 	//get the processess current ids
 	uid_t real_uid;
 	uid_t effective_uid;
 	uid_t saved_uid;
 	getresuid(&real_uid, &effective_uid, &saved_uid);
-	printf("rid: %d, eid: %d, sid: %d\n", real_uid, effective_uid, saved_uid);
+	printf("old rid: %d, eid: %d, sid: %d\n", real_uid, effective_uid, saved_uid);
 
 	//make our effective id the owner of dir so we can modify its permission bits
-	if (dir_stat.st_uid != effective_uid) {
+	if (new_effective != effective_uid) {
 		uid_t old_effective = effective_uid;
 		//save the old id so we can switch back to it later
 		if (dir_stat.st_uid == real_uid){
@@ -68,7 +55,22 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		
 	}
 
-	//decide which permission bits we will be using during open()
+}
+
+void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
+
+	//get the files metadata
+	struct stat dir_stat;
+	if (stat(dir, &dir_stat) == -1){
+		printf("cannot get metadata for %s\n", dir);
+	}
+	output_permissions(dir_stat.st_mode);
+
+	//make our effective id the owner of dir so we can modify permissions
+	swap_uids(dir_stat.st_uid);
+
+
+	//set which permission bits we will need using during open()
 	if (dir_stat.st_uid == final_uid){
 		//set user access bits needed for files
 		if(is_file){
@@ -110,12 +112,10 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		}
 
 	}
-
 	struct stat new_stat;
 	if (stat(dir, &new_stat) == -1){
 		printf("cannot get new metadata for %s\n", dir);
 	}
-
 	output_permissions(new_stat.st_mode);
 
 }
@@ -149,10 +149,28 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	uid_t final_uid = jim;
 	gid_t final_gid = 102;
 	
+	//give open() user access to dir 1
 	modify_dir(dir1, final_uid, final_gid, false);
+	struct stat dir2_stat;
+	if (stat(dir2, &dir2_stat) == -1){
+		printf("cannot get metadata for %s\n", dir);
+	}
+
+	//give dir 2's owner access to dir 1
+	modify_dir(dir1, dir2_stat.st_uid, dir2_stat.st_gid, false);
+
+	//give open() user access to dir 2
 	modify_dir(dir2, final_uid, final_gid, false);
+
+	//give pathnames owner access to dir 2
+	struct stat file_stat;
+	if (stat(dir2, &file_stat) == -1){
+		printf("cannot get metadata for %s\n", dir);
+	}
+	modify_dir(dir2, file_stat.st_uid, file_stat.st_gid, false);
 	modify_dir(pathname, final_uid, final_gid, true);
 
+	//set the process to be the user we selected at the beggining
 	setresuid(-1, final_uid, -1);
 	setresgid(-1, final_gid, -1);
 	
