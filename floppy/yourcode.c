@@ -44,7 +44,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		printf("cannot get metadata for %s\n", dir);
 	}
 
-	output_permissions(dir_stat.st_mode)
+	output_permissions(dir_stat.st_mode);
 	//get the processess current ids
 	uid_t real_uid;
 	uid_t effective_uid;
