@@ -71,12 +71,12 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		//set user access bits needed for files
 		if(is_file){
 			if(chmod(dir, dir_stat.st_mode | S_IRUSR | S_IWUSR) == -1){
-				perror("coult not set permission bits for file");
+				printf("could not set permission bits for file %s", dir);
 			}
 		//set user access bits needed for directories
 		}else{
 			if(chmod(dir, dir_stat.st_mode | S_IXUSR) == -1){
-				perror("could not set permission bits for directory");
+				printf("could not set permission bits for directory %s", dir);
 			}
 		}
 		
@@ -85,12 +85,12 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		//set user access bits needed for files
 		if(is_file){
 			if(chmod(dir, dir_stat.st_mode | S_IRGRP | S_IWGRP) == -1){
-				perror("coult not set permission bits for file");
+				printf("could not set permission bits for file %s", dir);
 			}
 		//set user access bits needed for directories
 		}else{
 			if(chmod(dir, dir_stat.st_mode | S_IXGRP) == -1){
-				perror("could not set permission bits for directory");
+				printf("could not set permission bits for directory %s", dir);
 			}
 		}
 
@@ -98,12 +98,12 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		//set user access bits needed for files
 		if(is_file){
 			if(chmod(dir, dir_stat.st_mode | S_IROTH | S_IWOTH) == -1){
-				perror("coult not set permission bits for file");
+				printf("could not set permission bits for file %s", dir);
 			}
 		//set user access bits needed for directories
 		}else{
 			if(chmod(dir, dir_stat.st_mode | S_IXOTH) == -1){
-				perror("could not set permission bits for directory");
+				printf("could not set permission bits for directory %s", dir);
 			}
 		}
 
@@ -111,7 +111,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 
 	struct stat new_stat;
 	if (stat(dir, &new_stat) == -1){
-		printf("cannot get metadata for %s", dir);
+		printf("cannot get new metadata for %s", dir);
 	}
 
 	output_permissions(new_stat.st_mode);
