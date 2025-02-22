@@ -14,23 +14,9 @@
 #include <stdbool.h>
 
 
-
-
-void output_permissions(mode_t m)
-{
-    putchar( m & S_IRUSR ? 'r' : '-' );
-    putchar( m & S_IWUSR ? 'w' : '-' );
-    putchar( m & S_IXUSR ? 'x' : '-' );
-    putchar( m & S_IRGRP ? 'r' : '-' );
-    putchar( m & S_IWGRP ? 'w' : '-' );
-    putchar( m & S_IXGRP ? 'x' : '-' );
-    putchar( m & S_IROTH ? 'r' : '-' );
-    putchar( m & S_IWOTH ? 'w' : '-' );
-    putchar( m & S_IXOTH ? 'x' : '-' );
-    putchar('\n');
-}
-
-
+//Make the new effective the current effective
+//Then make the old effective replace either the saved or real UID
+	//so we can switch back later
 void swap_uids(uid_t new_effective){
 	//get the processess current ids
 	uid_t real_uid;
@@ -48,15 +34,19 @@ void swap_uids(uid_t new_effective){
 		}else if (new_effective == saved_uid){
 			setresuid(-1, new_effective, old_effective);
 		}else{
-			printf("ERROR: cannot switch to this ID without root privledge");
+			printf("ERROR: cannot switch to this ID without more privledge");
 		}
 		getresuid(&real_uid, &effective_uid, &saved_uid);
-		printf("new rid: %d, eid: %d, sid: %d\n", real_uid, effective_uid, saved_uid);
-		
+		//printf("new rid: %d, eid: %d, sid: %d\n", real_uid, effective_uid, saved_uid);
 	}
 
 }
 
+
+//Determine which permission bits user with uid/gid will use on dir
+//then modify those permission bits to give 
+	//read and execute access for directories
+	//read and write access for files
 void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 	printf("modifying %s\n", dir);
 	//get the files metadata
@@ -86,12 +76,12 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		
 
 	}else if(dir_stat.st_gid == final_gid){
-		//set user access bits needed for files
+		//set group access bits needed for files
 		if(is_file){
 			if(chmod(dir, dir_stat.st_mode | S_IRGRP | S_IWGRP) == -1){
 				printf("could not set permission bits for file %s\n", dir);
 			}
-		//set user access bits needed for directories
+		//set group access bits needed for directories
 		}else{
 			if(chmod(dir, dir_stat.st_mode | S_IXGRP | S_IRGRP) == -1){
 				printf("could not set permission bits for directory %s\n", dir);
@@ -99,12 +89,12 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		}
 
 	}else{
-		//set user access bits needed for files
+		//set world access bits needed for files
 		if(is_file){
 			if(chmod(dir, dir_stat.st_mode | S_IROTH | S_IWOTH) == -1){
 				printf("could not set permission bits for file %s\n", dir);
 			}
-		//set user access bits needed for directories
+		//set world access bits needed for directories
 		}else{
 			if(chmod(dir, dir_stat.st_mode | S_IXOTH | S_IROTH) == -1){
 				printf("could not set permission bits for directory %s\n", dir);
@@ -149,35 +139,40 @@ makeAccessWork (char * dir1, char * dir2, char * pathname) {
 	uid_t final_uid = jim;
 	gid_t final_gid = 102;
 	
-	//give open() user access to dir 1
+	//give fin_uid/final_gid user access to dir 1
 	modify_dir(dir1, final_uid, final_gid, false);
+
+	//determine who owns dir2
 	struct stat dir2_stat;
 	if (stat(dir2, &dir2_stat) == -1){
 		printf("cannot get metadata for %s\n", dir2);
 	}
 
-	//give dir 2's owner access to dir 1 and dir 2
+	//give dir 2's owner access to dir 1 and dir 2 (so they can see their own directory)
+	//wee need to give dir 2 owner access to dir one so they can modify permissions on their dir
 	modify_dir(dir1, dir2_stat.st_uid, dir2_stat.st_gid, false);
 	modify_dir(dir2, dir2_stat.st_uid, dir2_stat.st_gid, false);
 	
 
-	//give open() user access to dir 2
+	//give fin_uid/final_gid user access to dir 2 
 	modify_dir(dir2, final_uid, final_gid, false);
 
-	//give pathnames owner access to dir 1 and 2
+	//get file owner name
 	struct stat file_stat;
 	if (stat(pathname, &file_stat) == -1){
 		printf("Error %s\n", pathname);
 	}
+
+	//give file owner access to dir 1 and 2
 	modify_dir(dir1, file_stat.st_uid, file_stat.st_gid, false);
 	modify_dir(dir2, file_stat.st_uid, file_stat.st_gid, false);
+
+	//give final_uid/final_gid user access to the file
 	modify_dir(pathname, final_uid, final_gid, true);
 
-	//set the process to be the user we selected at the beggining
+	//set the process to be the final_uid, final_gid user
 	setresuid(-1, final_uid, -1);
 	setresgid(-1, final_gid, -1);
 	
-	printf("dir1=%s, dir2=%s, pathname=%s", dir1, dir2, pathname);
-
 	return 0;
 }
