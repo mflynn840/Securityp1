@@ -23,7 +23,7 @@ void swap_uids(uid_t new_effective){
 	uid_t effective_uid;
 	uid_t saved_uid;
 	getresuid(&real_uid, &effective_uid, &saved_uid);
-	printf("old rid: %d, eid: %d, sid: %d\n", real_uid, effective_uid, saved_uid);
+	//printf("old rid: %d, eid: %d, sid: %d\n", real_uid, effective_uid, saved_uid);
 
 	//make our effective id the owner of dir so we can modify its permission bits
 	if (new_effective != effective_uid) {
@@ -48,7 +48,7 @@ void swap_uids(uid_t new_effective){
 	//read and execute access for directories
 	//read and write access for files
 void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
-	printf("modifying %s\n", dir);
+	//printf("modifying %s\n", dir);
 	//get the files metadata
 	struct stat dir_stat;
 	if (stat(dir, &dir_stat) == -1){
@@ -107,7 +107,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 		printf("cannot get new metadata for %s\n", dir);
 	}
 	//output_permissions(new_stat.st_mode);
-	printf("done modifying %s\n", dir);
+	//printf("done modifying %s\n", dir);
 }
 
 
