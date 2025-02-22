@@ -54,7 +54,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 	if (stat(dir, &dir_stat) == -1){
 		printf("cannot get metadata for %s\n", dir);
 	}
-	output_permissions(dir_stat.st_mode);
+	//output_permissions(dir_stat.st_mode);
 
 	//make our effective id the owner of dir so we can modify permissions
 	swap_uids(dir_stat.st_uid);
@@ -106,7 +106,7 @@ void modify_dir(char* dir, uid_t final_uid, uid_t final_gid, bool is_file){
 	if (stat(dir, &new_stat) == -1){
 		printf("cannot get new metadata for %s\n", dir);
 	}
-	output_permissions(new_stat.st_mode);
+	//output_permissions(new_stat.st_mode);
 	printf("done modifying %s\n", dir);
 }
 
